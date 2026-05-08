@@ -2,7 +2,7 @@ import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 
 import styles from './ArticleParamsForm.module.scss';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
 	ArticleStateType,
 	backgroundColors,
@@ -26,6 +26,21 @@ export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [formState, setFormState] = useState(articleState);
 
+	const formRef = useRef<HTMLElement>(null);
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (formRef.current && !formRef.current.contains(event.target as Node)) {
+				setIsOpen(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
+
 	const toggleMenu = () => {
 		setIsOpen(!isOpen);
 	};
@@ -45,6 +60,7 @@ export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
 			<ArrowButton isOpen={isOpen} onClick={toggleMenu} />
 
 			<aside
+				ref={formRef}
 				className={`${styles.container} ${
 					isOpen ? styles.container_open : ''
 				}`}>
