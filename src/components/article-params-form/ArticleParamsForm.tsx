@@ -23,7 +23,7 @@ type Props = {
 };
 
 export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
-	const [isOpen, setIsOpen] = useState(true);
+	const [isOpen, setIsOpen] = useState(false);
 	const [formState, setFormState] = useState(articleState);
 
 	const toggleMenu = () => {
