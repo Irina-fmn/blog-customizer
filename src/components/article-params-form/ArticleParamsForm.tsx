@@ -16,6 +16,7 @@ import { Select } from 'src/ui/select';
 import { Text } from 'src/ui/text';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+import clsx from 'clsx';
 
 type Props = {
 	articleState: ArticleStateType;
@@ -23,14 +24,17 @@ type Props = {
 };
 
 export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
-	const [isOpen, setIsOpen] = useState(false);
+	const [isParamsFormOpen, setIsParamsFormOpen] = useState(false);
 	const [formState, setFormState] = useState(articleState);
 
 	const formRef = useRef<HTMLElement>(null);
 	useEffect(() => {
+		if (!isParamsFormOpen) {
+			return;
+		}
 		const handleClickOutside = (event: MouseEvent) => {
 			if (formRef.current && !formRef.current.contains(event.target as Node)) {
-				setIsOpen(false);
+				setIsParamsFormOpen(false);
 			}
 		};
 
@@ -39,10 +43,10 @@ export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, []);
+	}, [isParamsFormOpen]);
 
 	const toggleMenu = () => {
-		setIsOpen(!isOpen);
+		setIsParamsFormOpen(!isParamsFormOpen);
 	};
 
 	const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
@@ -57,13 +61,14 @@ export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={toggleMenu} />
+			<ArrowButton isOpen={isParamsFormOpen} onClick={toggleMenu} />
 
 			<aside
 				ref={formRef}
-				className={`${styles.container} ${
-					isOpen ? styles.container_open : ''
-				}`}>
+				className={clsx(
+					styles.container,
+					isParamsFormOpen && styles.container_open
+				)}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<Text as='h2' size={31} weight={800} uppercase>
 						Задайте параметры
