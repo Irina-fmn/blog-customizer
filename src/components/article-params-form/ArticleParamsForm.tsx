@@ -11,6 +11,7 @@ import {
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
+	OptionType,
 } from 'src/constants/articleProps';
 import { Select } from 'src/ui/select';
 import { Text } from 'src/ui/text';
@@ -59,6 +60,11 @@ export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
 		setArticleState(defaultArticleState);
 	};
 
+	const createHandleChange =
+		(key: keyof ArticleStateType) => (option: OptionType) => {
+			setFormState({ ...formState, [key]: option });
+		};
+
 	return (
 		<>
 			<ArrowButton isOpen={isParamsFormOpen} onClick={toggleMenu} />
@@ -69,7 +75,10 @@ export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
 					styles.container,
 					isParamsFormOpen && styles.container_open
 				)}>
-				<form className={styles.form} onSubmit={handleSubmit}>
+				<form
+					className={styles.form}
+					onSubmit={handleSubmit}
+					onReset={handleReset}>
 					<Text as='h2' size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
@@ -77,27 +86,21 @@ export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
 						selected={formState.fontFamilyOption}
 						options={fontFamilyOptions}
 						title='шрифт'
-						onChange={(option) => {
-							setFormState({ ...formState, fontFamilyOption: option });
-						}}
+						onChange={createHandleChange('fontFamilyOption')}
 					/>
 					<RadioGroup
 						name='font-size'
 						options={fontSizeOptions}
 						selected={formState.fontSizeOption}
 						title='размер шрифта'
-						onChange={(option) => {
-							setFormState({ ...formState, fontSizeOption: option });
-						}}
+						onChange={createHandleChange('fontSizeOption')}
 					/>
 
 					<Select
 						selected={formState.fontColor}
 						options={fontColors}
 						title='цвет шрифта'
-						onChange={(option) => {
-							setFormState({ ...formState, fontColor: option });
-						}}
+						onChange={createHandleChange('fontColor')}
 					/>
 					<Separator />
 
@@ -105,27 +108,18 @@ export const ArticleParamsForm = ({ articleState, setArticleState }: Props) => {
 						selected={formState.backgroundColor}
 						options={backgroundColors}
 						title='цвет фона'
-						onChange={(option) => {
-							setFormState({ ...formState, backgroundColor: option });
-						}}
+						onChange={createHandleChange('backgroundColor')}
 					/>
 
 					<Select
 						selected={formState.contentWidth}
 						options={contentWidthArr}
-						title='ширина контена'
-						onChange={(option) => {
-							setFormState({ ...formState, contentWidth: option });
-						}}
+						title='ширина контента'
+						onChange={createHandleChange('contentWidth')}
 					/>
 
 					<div className={styles.bottomContainer}>
-						<Button
-							title='Сбросить'
-							htmlType='reset'
-							type='clear'
-							onClick={handleReset}
-						/>
+						<Button title='Сбросить' htmlType='reset' type='clear' />
 						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>
 				</form>
